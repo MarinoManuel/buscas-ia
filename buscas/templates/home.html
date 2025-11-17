@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Visualização de Grafo</title>
+
+<!-- TAILWIND -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+    circle {
+        fill: #e5e7eb;
+        stroke: #374151;
+        stroke-width: 2;
+        transition: fill 0.5s ease;
+    }
+    line {
+        stroke: #9ca3af;
+        stroke-width: 2.5;
+    }
+    .highlight-edge {
+        stroke: #2563eb !important;
+        stroke-width: 4 !important;
+    }
+
+    /* scroll suave */
+    #graph-container {
+        overflow: auto;
+        position: relative;
+        background: white;
+    }
+
+    /* impede seleções acidentais ao arrastar */
+    svg {
+        user-select: none;
+        cursor: grab;
+    }
+    svg:active {
+        cursor: grabbing;
+    }
+</style>
+</head>
+
+<body class="bg-gray-100 h-screen flex overflow-hidden">
+
+<!-- Painel lateral -->
+<div class="w-80 bg-white shadow-xl p-6 flex flex-col gap-4 border-r border-gray-200 overflow-y-auto">
+    <h1 class="text-xl font-bold text-blue-600 text-center">BDR Rotas</h1>
+
+    <h2 class="text-lg font-semibold text-gray-700">Configurar Caminho</h2>
+
+    <!-- Origem -->
+    <div class="flex flex-col gap-2">
+        <label class="text-gray-600 text-sm">Origem:</label>
+        <select id="orig" class="px-3 py-2 border border-gray-300 rounded-lg bg-white"></select>
+    </div>
+
+    <!-- Destino -->
+    <div class="flex flex-col gap-2">
+        <label class="text-gray-600 text-sm">Destino:</label>
+        <select id="dest" class="px-3 py-2 border border-gray-300 rounded-lg bg-white"></select>
+    </div>
+
+    <!-- Tempo -->
+    <div class="flex flex-col gap-2">
+        <label class="text-gray-600 text-sm">Tempo em horas:</label>
+        <input type="number" name="tempo" id="tmp" class="px-3 py-2 border border-gray-300 rounded-lg bg-white">
+    </div>
+
+    <!-- Algoritmo -->
+    <div class="flex flex-col gap-2">
+        <label class="text-gray-600 text-sm">Algoritmo:</label>
+        <select id="algoritmo_escolhido" class="px-3 py-2 border border-gray-300 rounded-lg bg-white" required>
+            <option value="">Selecione...</option>
+            <option value="A">A*</option>
+            <option value="BP">Busca em profundidade</option>
+            <option value="CU">Custo uniforme</option>
+        </select>
+    </div>
+
+    <button onclick="buscarCaminho()"
+        class="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg shadow hover:shadow-lg transition">
+        ENVIAR
+    </button>
+</div>
+
+<!-- Grafo -->
+<div id="graph-container" class="flex-1 overflow-auto">
+    <svg id="graph"
+        width="2000"
+        height="1400"
+        viewBox="0 0 2000 1400"
+        preserveAspectRatio="xMinYMin meet"
+        >
+    </svg>
+</div>
+
+<script>
+/* ==========================================================
+   GRAFO
+========================================================== */
+grafo = {
+    'Aeroporto': ['MEREC', 'OLAM'],
+    'Manhica': ['Xinavane', 'Matola'],
+    'Palmeira': ['Xinavane', 'Matola'],
+    'Xinavane': ['Manhica', 'Palmeira', 'Chokwe'],
+    'Macia': ['Chokwe', 'PARMALAT'],
+    'Chokwe': ['Xinavane', 'Macia', 'Lionde', 'Bilene'],
+    'Lionde': ['Chokwe', 'Chicumbane', 'PARMALAT'],
+    'Chibuto': ['Chaimite', 'Chicumbane', 'PARMALAT'],
+    'Chaimite': ['Chibuto', 'Mabalane'],
+    'Mabalane': ['Chaimite', 'Chicumbane', 'Chimoio'],
+    'Chicumbane': ['Lionde', 'Chibuto', 'Mabalane', 'Xai-Xai'],
+    'Xai-Xai': ['Chicumbane', 'Bilene', 'SHOPRITE'],
+    'Matola': ['Manhica', 'Palmeira', 'Marracuene', 'OLAM'],
+    'Bilene': ['Chokwe', 'Xai-Xai', 'Inharrime'],
+    'Inharrime': ['Bilene', 'Panda', 'Magude', 'Sabie'],
+    'Inhambane': ['Vilanculos', 'Massinga', 'Magude'],
+    'Maxixe': ['Vilanculos', 'Panda', 'Magude'],
+    'Panda': ['Inharrime', 'Maxixe', 'SHOPRITE'],
+    'Vilanculos': ['Inhambane', 'Maxixe', 'Save'],
+    'Massinga': ['Inhambane', 'Govuro', 'Ressano_Garcia'],
+    'Govuro': ['Massinga', 'Save'],
+    'Save': ['Govuro', 'Vilanculos', 'RECHEIO'],
+    'Marracuene': ['Matola', 'Sabie', 'OLAM'],
+    'Muxungue': ['Dondo', 'RECHEIO', 'SHOPRITE'],
+    'Dondo': ['Muxungue', 'Nhamatanda', 'Sussundenga'],
+    'Nhamatanda': ['Dondo', 'Manica', 'Gondola', 'SHOPRITE'],
+    'Chimoio': ['Mabalane', 'Gondola', 'SHOPRITE'],
+    'Gondola': ['Nhamatanda', 'Chimoio', 'SPAR'],
+    'Manica': ['Nhamatanda', 'Catandica', 'Espungabera', 'SPAR'],
+    'Catandica': ['Manica', 'Espungabera', 'Sussundenga'],
+    'Espungabera': ['Manica', 'Catandica', 'Tica'],
+    'Sussundenga': ['Dondo', 'Catandica', 'Tica'],
+    'Tica': ['Espungabera', 'Sussundenga', 'Mocuba'],
+    'Boane': ['Ressano_Garcia', 'Magude', 'OLAM'],
+    'Mocuba': ['Tica', 'Nova_Mambone', 'Inhassoro', 'RECHEIO'],
+    'Nova_Mambone': ['Mocuba', 'Inhassoro'],
+    'Inhassoro': ['Mocuba', 'Nova_Mambone', 'Namaacha'],
+    'Ressano_Garcia': ['Massinga', 'Boane', 'MEREC'],
+    'Namaacha': ['Inhassoro', 'MEREC'],
+    'Magude': ['Inharrime', 'Inhambane', 'Maxixe', 'Boane', 'Sabie'],
+    'Sabie': ['Inharrime', 'Marracuene', 'Magude'],
+    'MEREC': ['Aeroporto', 'Ressano_Garcia', 'Namaacha'],
+    'OLAM': ['Aeroporto', 'Matola', 'Marracuene', 'Boane'],
+    'PARMALAT': ['Macia', 'Lionde', 'Chibuto'],
+    'RECHEIO': ['Save', 'Muxungue', 'Mocuba'],
+    'SHOPRITE': ['Xai-Xai', 'Panda', 'Muxungue', 'Nhamatanda', 'Chimoio'],
+    'SPAR': ['Gondola', 'Manica']
+};
+
+/* ==========================================================
+   AUTO-PREENCHER SELECTS
+========================================================== */
+const origSel = document.getElementById("orig");
+const destSel = document.getElementById("dest");
+const algoritmoSel = document.querySelector("#algoritmo_escolhido")
+
+Object.keys(grafo).forEach(n => {
+    origSel.innerHTML += `<option value="${n}">${n}</option>`;
+    destSel.innerHTML += `<option value="${n}">${n}</option>`;
+});
+
+/* ==========================================================
+   GERAR LAYOUT ALEATÓRIO
+========================================================== */
+const svg = document.getElementById("graph");
+let coords = {
+    "OLAM": {
+        "x": -54.76962182609359,
+        "y": 36.5579970472859
+    },
+    "Catandica": {
+        "x": 1024.9134469936535,
+        "y": 484.52064353283424
+    },
+    "Aeroporto": {
+        "x": -16.08544585861427,
+        "y": 310.84485289323806
+    },
+    "Marracuene": {
+        "x": 246.74216245748957,
+        "y": 8.84123709344852
+    },
+    "Matola": {
+        "x": 168.84105718976951,
+        "y": -156.43780801635023
+    },
+    "MEREC": {
+        "x": 70.50985180085081,
+        "y": 479.4224556718711
+    },
+    "Boane": {
+        "x": 192.1002938302819,
+        "y": 237.85395003218756
+    },
+    "Nova_Mambone": {
+        "x": 583.6332965822619,
+        "y": 619.5572324460987
+    },
+    "Sabie": {
+        "x": 429.53444456490155,
+        "y": 12.400016504754872
+    },
+    "Palmeira": {
+        "x": 394.91599211335983,
+        "y": -309.47775003296334
+    },
+    "Vilanculos": {
+        "x": 545.0365502768724,
+        "y": 289.4168418791437
+    },
+    "Ressano_Garcia": {
+        "x": 190.69324106827216,
+        "y": 378.01326807141805
+    },
+    "Panda": {
+        "x": 715.2697503773255,
+        "y": 105.22034368589385
+    },
+    "Massinga": {
+        "x": 375.3850860886901,
+        "y": 378.07114379834314
+    },
+    "Chicumbane": {
+        "x": 1071.016341223528,
+        "y": -125.20518693961733
+    },
+    "Namaacha": {
+        "x": 276.89530722406,
+        "y": 524.3672036676365
+    },
+    "Inhambane": {
+        "x": 417.36922628172886,
+        "y": 245.64427987997564
+    },
+    "Maxixe": {
+        "x": 602.6530234004672,
+        "y": 179.61420274805624
+    },
+    "Bilene": {
+        "x": 642.1625337789924,
+        "y": -54.03304443888953
+    },
+    "RECHEIO": {
+        "x": 789.4274964623681,
+        "y": 344.8030198991784
+    },
+    "Govuro": {
+        "x": 545.1970698609346,
+        "y": 406.1959721823769
+    },
+    "Xai-Xai": {
+        "x": 798.6286506723623,
+        "y": -37.068949358394775
+    },
+    "Xinavane": {
+        "x": 595.1754890275622,
+        "y": -157.62128716752085
+    },
+    "Manica": {
+        "x": 1146.9521699975862,
+        "y": 394.5009058448048
+    },
+    "Tica": {
+        "x": 991.8770041985454,
+        "y": 611.0932077493899
+    },
+    "SHOPRITE": {
+        "x": 921.2282475858433,
+        "y": 62.45465556681255
+    },
+    "Save": {
+        "x": 635.8338768635241,
+        "y": 350.21016680017095
+    },
+    "Macia": {
+        "x": 701.2774219465356,
+        "y": -365.0535218265342
+    },
+    "PARMALAT": {
+        "x": 875.5161545310068,
+        "y": -412.71188644414894
+    },
+    "Chokwe": {
+        "x": 736.3417225578837,
+        "y": -196.67732117182643
+    },
+    "Mabalane": {
+        "x": 1381.520757887507,
+        "y": -132.02567624555536
+    },
+    "Lionde": {
+        "x": 893.9128447332339,
+        "y": -181.30752656349154
+    },
+    "Chibuto": {
+        "x": 1080.3481926396958,
+        "y": -272.7179980077452
+    },
+    "Chaimite": {
+        "x": 1324.9168361481213,
+        "y": -359.04163216626205
+    },
+    "Chimoio": {
+        "x": 1320.3941279525263,
+        "y": 66.25996474210032
+    },
+    "Inharrime": {
+        "x": 561.537594698301,
+        "y": 66.63688834816676
+    },
+    "Muxungue": {
+        "x": 837.4769768752861,
+        "y": 217.5327249637656
+    },
+    "Dondo": {
+        "x": 953.3640197131407,
+        "y": 327.98074648596906
+    },
+    "SPAR": {
+        "x": 1371.100379110273,
+        "y": 466.24512555441964
+    },
+    "Nhamatanda": {
+        "x": 1132.2798048374543,
+        "y": 235.21331760011114
+    },
+    "Gondola": {
+        "x": 1379.2789619314435,
+        "y": 274.34406395994716
+    },
+    "Espungabera": {
+        "x": 1117.1513937251318,
+        "y": 560.3040943821908
+    },
+    "Sussundenga": {
+        "x": 902.2443723147303,
+        "y": 488.4676792514928
+    },
+    "Magude": {
+        "x": 294.7651920303682,
+        "y": 143.4772379878415
+    },
+    "Mocuba": {
+        "x": 688.7961949552662,
+        "y": 522.3880108964916
+    },
+    "Inhassoro": {
+        "x": 447.8501349235901,
+        "y": 525.4428828744234
+    },
+    "Manhica": {
+        "x": 401.9523878439766,
+        "y": -138.1748810803142
+    }
+}
+
+// Ajustar a posicao dos nos para estarem dentro do mapa
+let minX = Math.min(...Object.values(coords).map(c => c.x));
+let minY = Math.min(...Object.values(coords).map(c => c.y));
+
+Object.keys(coords).forEach(node => {
+    coords[node].x -= minX - 50; // +50 para não colar na borda
+    coords[node].y -= minY - 50;
+});
+
+/*Object.keys(grafo).forEach(node => {
+    coords[node] = {
+        x: Math.random() * 1800 + 100,
+        y: Math.random() * 1200 + 100
+    };
+});*/
+
+// ARESTAS
+Object.keys(grafo).forEach(a => {
+    grafo[a].forEach(b => {
+        svg.innerHTML += `
+            <line id="edge-${a}-${b}"
+                x1="${coords[a].x}" y1="${coords[a].y}"
+                x2="${coords[b].x}" y2="${coords[b].y}" />
+        `;
+    });
+});
+
+// NÓS
+Object.keys(grafo).forEach(n => {
+    svg.innerHTML += `
+        <circle id="${n}" cx="${coords[n].x}" cy="${coords[n].y}" r="18"></circle>
+        <text x="${coords[n].x}" y="${coords[n].y + 33}" font-size="13" text-anchor="middle">${n}</text>
+    `;
+});
+
+/* ==========================================================
+   ANIMAÇÃO DO CAMINHO
+========================================================== */
+function resetEdges() {
+    document.querySelectorAll("line").forEach(l => l.classList.remove("highlight-edge"));
+}
+
+function highlightEdge(a, b) {
+    let e1 = document.getElementById(`edge-${a}-${b}`);
+    let e2 = document.getElementById(`edge-${b}-${a}`);
+    if (e1) e1.classList.add("highlight-edge");
+    if (e2) e2.classList.add("highlight-edge");
+}
+
+function pintarVisitados(visitados) {
+    visitados.forEach(n => {
+        let c = document.getElementById(n);
+        if (c) c.style.fill = "#93c5fd"; // azul claro
+    });
+}
+
+async function pintarCaminho(cam, visitados) {
+    resetEdges();
+    document.querySelectorAll("circle").forEach(c => c.style.fill = "#e5e7eb");
+
+    // pintar visitados primeiro
+    pintarVisitados(visitados);
+
+    // pintar início e fim
+    document.getElementById(cam[0]).style.fill = "#16a34a";
+    document.getElementById(cam[cam.length - 1]).style.fill = "#16a34a";
+
+    // animar caminho final (em amarelo)
+    for (let i = 0; i < cam.length - 1; i++) {
+        highlightEdge(cam[i], cam[i + 1]);
+        document.getElementById(cam[i]).style.fill = "#fbbf24"; // amarelo
+        await new Promise(r => setTimeout(r, 500));
+    }
+}
+
+
+/* ==========================================================
+   REQUEST PARA O BACKEND
+========================================================== */
+function buscarCaminho() {
+    const origem = origSel.value;
+    const destino = destSel.value;
+    const algoritmo = algoritmoSel.selectedOptions[0].value
+
+    fetch("buscar", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ origem, destino, algoritmo })
+    })
+    .then(r => r.json())
+    .then(data => pintarCaminho(data.caminho, data.nos_visitados))
+    .catch(e => alert("Erro: " + e));
+}
+
+/* ==========================================================
+   ZOOM E ARRASTAR SVG
+========================================================== */
+let zoom = 1;
+let panX = 0;
+let panY = 0;
+let dragging = false;
+let startX, startY;
+
+const svgContainer = document.getElementById("graph-container");
+
+svgContainer.addEventListener("wheel", e => {
+    e.preventDefault();
+
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    zoom *= delta;
+    zoom = Math.min(Math.max(zoom, 0.3), 4);
+
+    svg.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+});
+
+svgContainer.addEventListener("mousedown", e => {
+    dragging = true;
+    startX = e.clientX - panX;
+    startY = e.clientY - panY;
+});
+
+svgContainer.addEventListener("mousemove", e => {
+    if (!dragging) return;
+
+    panX = e.clientX - startX;
+    panY = e.clientY - startY;
+    svg.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+});
+
+svgContainer.addEventListener("mouseup", () => dragging = false);
+svgContainer.addEventListener("mouseleave", () => dragging = false);
+
+</script>
+
+</body>
+</html>

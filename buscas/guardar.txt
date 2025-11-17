@@ -1,0 +1,15 @@
+def custo(a, b):
+    #busca custo num .txt
+    return custos.get(frozenset({a, b}))
+
+a = custo('A', 'B')
+b = custo('B', 'A')
+
+funcao que guarda os dados.
+custos_serializavel = {','.join(k): v for k, v in custos.items()}
+
+# Salvar no arquivo JSON
+with open("custos.txt", "w") as f:
+    json.dump(custos_serializavel, f)
+
+funcao que  le os dados

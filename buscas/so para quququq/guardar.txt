@@ -1,0 +1,20 @@
+def custo(a, b):
+    #busca custo num .txt
+    return custos.get(frozenset({a, b}))
+
+a = custo('A', 'B')
+b = custo('B', 'A')
+
+def salvar_grafo(grafo, arquivo):
+    grafo_convertido = {k: list(v) for k, v in grafo.items()}
+    with open(arquivo, "w") as f:
+        json.dump(grafo_convertido, f, indent=4)
+
+salvar_grafo(grafo, "grafo.txt")
+
+def carregar_grafo(arquivo):
+    with open(arquivo, "r") as f:
+        dados = json.load(f)
+    return {k: set(v) for k, v in dados.items()}  # lista → set
+
+grafo = carregar_grafo("grafo.txt")

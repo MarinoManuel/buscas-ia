@@ -1,0 +1,240 @@
+{
+    "Aeroporto": [
+        "OLAM",
+        "MEREC"
+    ],
+    "Manhica": [
+        "Xinavane",
+        "Matola"
+    ],
+    "Palmeira": [
+        "Xinavane",
+        "Matola"
+    ],
+    "Xinavane": [
+        "Palmeira",
+        "Manhica",
+        "Chokwe"
+    ],
+    "Macia": [
+        "PARMALAT",
+        "Chokwe"
+    ],
+    "Chokwe": [
+        "Macia",
+        "Xinavane",
+        "Bilene",
+        "Lionde"
+    ],
+    "Lionde": [
+        "PARMALAT",
+        "Chicumbane",
+        "Chokwe"
+    ],
+    "Chibuto": [
+        "PARMALAT",
+        "Chaimite",
+        "Chicumbane"
+    ],
+    "Chaimite": [
+        "Chibuto",
+        "Mabalane"
+    ],
+    "Mabalane": [
+        "Chaimite",
+        "Chicumbane",
+        "Chimoio"
+    ],
+    "Chicumbane": [
+        "Chibuto",
+        "Mabalane",
+        "Lionde",
+        "Xai-Xai"
+    ],
+    "Xai-Xai": [
+        "SHOPRITE",
+        "Bilene",
+        "Chicumbane"
+    ],
+    "Matola": [
+        "Palmeira",
+        "Manhica",
+        "OLAM",
+        "Marracuene"
+    ],
+    "Bilene": [
+        "Chokwe",
+        "Inharrime",
+        "Xai-Xai"
+    ],
+    "Inharrime": [
+        "Bilene",
+        "Magude",
+        "Panda",
+        "Sabie"
+    ],
+    "Inhambane": [
+        "Massinga",
+        "Magude",
+        "Vilanculos"
+    ],
+    "Maxixe": [
+        "Magude",
+        "Vilanculos",
+        "Panda"
+    ],
+    "Panda": [
+        "SHOPRITE",
+        "Maxixe",
+        "Inharrime"
+    ],
+    "Vilanculos": [
+        "Maxixe",
+        "Save",
+        "Inhambane"
+    ],
+    "Massinga": [
+        "Govuro",
+        "Inhambane",
+        "Ressano_Garcia"
+    ],
+    "Govuro": [
+        "Massinga",
+        "Save"
+    ],
+    "Save": [
+        "Govuro",
+        "RECHEIO",
+        "Vilanculos"
+    ],
+    "Marracuene": [
+        "OLAM",
+        "Matola",
+        "Sabie"
+    ],
+    "Muxungue": [
+        "SHOPRITE",
+        "RECHEIO",
+        "Dondo"
+    ],
+    "Dondo": [
+        "Muxungue",
+        "Nhamatanda",
+        "Sussundenga"
+    ],
+    "Nhamatanda": [
+        "SHOPRITE",
+        "Manica",
+        "Dondo",
+        "Gondola"
+    ],
+    "Chimoio": [
+        "SHOPRITE",
+        "Mabalane",
+        "Gondola"
+    ],
+    "Gondola": [
+        "Nhamatanda",
+        "SPAR",
+        "Chimoio"
+    ],
+    "Manica": [
+        "Nhamatanda",
+        "Espungabera",
+        "SPAR",
+        "Catandica"
+    ],
+    "Catandica": [
+        "Manica",
+        "Sussundenga",
+        "Espungabera"
+    ],
+    "Espungabera": [
+        "Manica",
+        "Tica",
+        "Catandica"
+    ],
+    "Sussundenga": [
+        "Tica",
+        "Catandica",
+        "Dondo"
+    ],
+    "Tica": [
+        "Sussundenga",
+        "Espungabera",
+        "Mocuba"
+    ],
+    "Boane": [
+        "OLAM",
+        "Magude",
+        "Ressano_Garcia"
+    ],
+    "Mocuba": [
+        "Inhassoro",
+        "Tica",
+        "Nova_Mambone",
+        "RECHEIO"
+    ],
+    "Nova_Mambone": [
+        "Inhassoro",
+        "Mocuba"
+    ],
+    "Inhassoro": [
+        "Nova_Mambone",
+        "Mocuba",
+        "Namaacha"
+    ],
+    "Ressano_Garcia": [
+        "Massinga",
+        "Boane",
+        "MEREC"
+    ],
+    "Namaacha": [
+        "Inhassoro",
+        "MEREC"
+    ],
+    "Magude": [
+        "Sabie",
+        "Maxixe",
+        "Boane",
+        "Inharrime",
+        "Inhambane"
+    ],
+    "Sabie": [
+        "Magude",
+        "Inharrime",
+        "Marracuene"
+    ],
+    "MEREC": [
+        "Aeroporto",
+        "Ressano_Garcia",
+        "Namaacha"
+    ],
+    "OLAM": [
+        "Aeroporto",
+        "Boane",
+        "Matola",
+        "Marracuene"
+    ],
+    "PARMALAT": [
+        "Macia",
+        "Lionde",
+        "Chibuto"
+    ],
+    "RECHEIO": [
+        "Save",
+        "Muxungue",
+        "Mocuba"
+    ],
+    "SHOPRITE": [
+        "Muxungue",
+        "Chimoio",
+        "Nhamatanda",
+        "Panda",
+        "Xai-Xai"
+    ],
+    "SPAR": [
+        "Manica",
+        "Gondola"
+    ]
+}

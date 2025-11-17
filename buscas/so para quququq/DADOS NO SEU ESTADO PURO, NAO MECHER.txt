@@ -1,0 +1,113 @@
+custos = {
+    frozenset({'Aeroporto', 'MEREC'}): (50, 0.7, 0.9, 80),
+    frozenset({'Aeroporto', 'OLAM'}): (65, 0.6, 1.0, 80),
+
+    frozenset({'Manhica', 'Xinavane'}): (25, 0.9, 0.8, 100),
+    frozenset({'Manhica', 'Matola'}): (25, 0.5, 0.9, 80),
+
+    frozenset({'Palmeira', 'Xinavane'}): (30, 1.0, 0.7, 60),
+    frozenset({'Palmeira', 'Matola'}): (40, 0.6, 0.9, 80),
+
+    frozenset({'Xinavane', 'Chokwe'}): (27, 0.8, 1.0, 100),
+
+    frozenset({'Macia', 'Chokwe'}): (30, 0.9, 0.8, 80),
+    frozenset({'Macia', 'PARMALAT'}): (37, 0.8, 1.0, 60),
+
+    frozenset({'Chokwe', 'Lionde'}): (39, 1.0, 0.9, 80),
+    frozenset({'Chokwe', 'Bilene'}): (30, 0.7, 0.8, 100),
+
+    frozenset({'Lionde', 'Chicumbane'}): (40, 0.9, 0.9, 80),
+    frozenset({'Lionde', 'PARMALAT'}): (50, 0.8, 1.0, 60),
+
+    frozenset({'Chibuto', 'Chaimite'}): (60, 1.0, 0.7, 80),
+    frozenset({'Chibuto', 'Chicumbane'}): (40, 0.9, 0.9, 100),
+    frozenset({'Chibuto', 'PARMALAT'}): (60, 0.7, 1.0, 60),
+
+    frozenset({'Chaimite', 'Mabalane'}): (40, 1.0, 0.6, 80),
+
+    frozenset({'Mabalane', 'Chicumbane'}): (80, 0.9, 0.8, 100),
+    frozenset({'Mabalane', 'Chimoio'}): (55, 0.8, 0.7, 100),
+
+    frozenset({'Chicumbane', 'Xai-Xai'}): (48, 0.6, 0.9, 80),
+
+    frozenset({'Xai-Xai', 'Bilene'}): (40, 0.7, 1.0, 80),
+    frozenset({'Xai-Xai', 'SHOPRITE'}): (48, 0.4, 1.0, 60),
+
+    frozenset({'Matola', 'Marracuene'}): (45, 0.4, 0.9, 80),
+    frozenset({'Matola', 'OLAM'}): (120, 0.3, 1.0, 60),
+
+    frozenset({'Bilene', 'Inharrime'}): (20, 0.9, 0.8, 100),
+
+    frozenset({'Inharrime', 'Panda'}): (45, 1.0, 0.9, 80),
+    frozenset({'Inharrime', 'Magude'}): (60, 0.9, 0.7, 80),
+    frozenset({'Inharrime', 'Sabie'}): (25, 0.8, 0.8, 100),
+
+    frozenset({'Inhambane', 'Vilanculos'}): (25, 0.8, 0.9, 100),
+    frozenset({'Inhambane', 'Massinga'}): (40, 0.9, 1.0, 80),
+    frozenset({'Inhambane', 'Magude'}): (55, 0.7, 0.7, 80),
+
+    frozenset({'Maxixe', 'Vilanculos'}): (40, 0.8, 1.0, 100),
+    frozenset({'Maxixe', 'Panda'}): (49, 1.0, 0.8, 80),
+    frozenset({'Maxixe', 'Magude'}): (60, 0.9, 0.9, 80),
+
+    frozenset({'Panda', 'SHOPRITE'}): (50, 0.6, 0.9, 60),
+
+    frozenset({'Vilanculos', 'Save'}): (30, 0.9, 1.0, 100),
+
+    frozenset({'Massinga', 'Govuro'}): (25, 1.0, 0.9, 80),
+    frozenset({'Massinga', 'Ressano_Garcia'}): (35, 0.7, 0.8, 100),
+
+    frozenset({'Govuro', 'Save'}): (27, 0.9, 1.0, 80),
+
+    frozenset({'Save', 'RECHEIO'}): (26, 0.6, 1.0, 60),
+
+    frozenset({'Marracuene', 'Sabie'}): (30, 0.8, 0.8, 80),
+    frozenset({'Marracuene', 'OLAM'}): (100, 0.5, 1.0, 60),
+
+    frozenset({'Muxungue', 'Dondo'}): (35, 0.9, 0.7, 100),
+    frozenset({'Muxungue', 'RECHEIO'}): (44, 0.7, 0.9, 60),
+    frozenset({'Muxungue', 'SHOPRITE'}): (70, 0.6, 1.0, 80),
+
+    frozenset({'Dondo', 'Nhamatanda'}): (70, 0.8, 0.9, 100),
+    frozenset({'Dondo', 'Sussundenga'}): (40, 0.9, 0.8, 80),
+
+    frozenset({'Nhamatanda', 'Manica'}): (40, 0.9, 0.9, 100),
+    frozenset({'Nhamatanda', 'Gondola'}): (50, 0.8, 1.0, 80),
+    frozenset({'Nhamatanda', 'SHOPRITE'}): (70, 0.5, 1.0, 60),
+
+    frozenset({'Chimoio', 'Gondola'}): (70, 0.7, 1.0, 80),
+    frozenset({'Chimoio', 'SHOPRITE'}): (70, 0.4, 1.0, 60),
+
+    frozenset({'Gondola', 'SPAR'}): (40, 0.5, 1.0, 60),
+
+    frozenset({'Manica', 'Catandica'}): (35, 0.9, 0.7, 80),
+    frozenset({'Manica', 'Espungabera'}): (40, 1.0, 0.6, 80),
+    frozenset({'Manica', 'SPAR'}): (48, 0.6, 1.0, 60),
+
+    frozenset({'Catandica', 'Espungabera'}): (25, 1.0, 0.7, 80),
+    frozenset({'Catandica', 'Sussundenga'}): (40, 0.9, 0.8, 80),
+
+    frozenset({'Espungabera', 'Tica'}): (30, 1.0, 0.5, 60),
+
+    frozenset({'Sussundenga', 'Tica'}): (35, 0.9, 0.9, 80),
+
+    frozenset({'Tica', 'Mocuba'}): (68, 0.8, 0.8, 100),
+
+    frozenset({'Boane', 'Ressano_Garcia'}): (55, 0.7, 0.9, 100),
+    frozenset({'Boane', 'Magude'}): (50, 0.9, 0.8, 80),
+    frozenset({'Boane', 'OLAM'}): (60, 0.5, 1.0, 80),
+
+    frozenset({'Mocuba', 'Nova_Mambone'}): (30, 0.9, 0.9, 80),
+    frozenset({'Mocuba', 'Inhassoro'}): (45, 0.8, 0.7, 100),
+    frozenset({'Mocuba', 'RECHEIO'}): (40, 0.6, 1.0, 60),
+
+    frozenset({'Nova_Mambone', 'Inhassoro'}): (40, 1.0, 0.9, 80),
+
+    frozenset({'Inhassoro', 'Namaacha'}): (30, 0.9, 0.8, 100),
+
+    frozenset({'Ressano_Garcia', 'MEREC'}): (20, 0.6, 1.0, 80),
+
+    frozenset({'Namaacha', 'MEREC'}): (40, 0.8, 0.9, 80),
+
+    frozenset({'Magude', 'Sabie'}): (55, 0.9, 0.8, 80),
+}
