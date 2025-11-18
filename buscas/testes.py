@@ -1,6 +1,4 @@
 
-
-
 grafo = {
     'Aeroporto': {'MEREC', 'OLAM'},
     'Manhica': {'Xinavane', 'Matola'},

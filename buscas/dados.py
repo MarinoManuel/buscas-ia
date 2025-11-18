@@ -27,3 +27,13 @@ def carregar_heuristica(nome_arquivo):
         heuristica = json.load(f)
     return heuristica
 
+def calcular_tempo_vizinho(vertice, vizinho):
+    custos = carregar_custos()
+    distancia_vizinho, congestionamento, condicao_estrada, velocidade_ideal = ler_custo(vertice,
+                                                                                          vizinho,
+                                                                                              custos)
+    velocidade_real = velocidade_ideal * congestionamento * condicao_estrada
+    if velocidade_real == 0:
+        return 0
+    tempo_vizinho = distancia_vizinho / velocidade_real
+    return tempo_vizinho

@@ -74,7 +74,7 @@
             <option value="">Selecione...</option>
             <option value="A">A*</option>
             <option value="BP">Busca em profundidade</option>
-            <option value="CU">Custo uniforme</option>
+            <option value="CU" selected>Custo uniforme</option>
         </select>
     </div>
 
@@ -408,7 +408,7 @@ function highlightEdge(a, b) {
 function pintarVisitados(visitados) {
     visitados.forEach(n => {
         let c = document.getElementById(n);
-        if (c) c.style.fill = "#93c5fd"; // azul claro
+        if (c) c.style.fill = "#FACC15"; // azul claro
     });
 }
 
@@ -426,11 +426,10 @@ async function pintarCaminho(cam, visitados) {
     // animar caminho final (em amarelo)
     for (let i = 0; i < cam.length - 1; i++) {
         highlightEdge(cam[i], cam[i + 1]);
-        document.getElementById(cam[i]).style.fill = "#fbbf24"; // amarelo
+        document.getElementById(cam[i]).style.fill = "#ef4444"; // vermelho
         await new Promise(r => setTimeout(r, 500));
     }
 }
-
 
 /* ==========================================================
    REQUEST PARA O BACKEND
@@ -439,14 +438,29 @@ function buscarCaminho() {
     const origem = origSel.value;
     const destino = destSel.value;
     const algoritmo = algoritmoSel.selectedOptions[0].value
+    const tempo = document.getElementById("tmp").value || 0;
+    if (algoritmo === "A") {
+        const destinosComHeuristica = ["SHOPRITE", "RECHEIO", "SPAR"];
+
+        if (!destinosComHeuristica.includes(destino)) {
+            alert("Não há heurísticas para esse destino introduzido e so existe busca heuristica para SHOPRITE, RECHEIO e SPAR");
+            return;
+        }
+    }
 
     fetch("buscar", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ origem, destino, algoritmo })
+        body: JSON.stringify({ origem, destino, algoritmo, tempo })
     })
     .then(r => r.json())
-    .then(data => pintarCaminho(data.caminho, data.nos_visitados))
+    .then(data => {
+        const tempoInput = document.getElementById("tmp");
+        if (data.tempo !== undefined) {
+            tempoInput.value = data.tempo; // Atualiza o campo com o tempo calculado
+        }
+        pintarCaminho(data.caminho, data.nos_visitados);
+    })
     .catch(e => alert("Erro: " + e));
 }
 

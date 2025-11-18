@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .algoritmos_buscas import ucs, ass
+from .algoritmos_buscas import ucs, ass, ids
 
 
 class BuscaView(APIView):
@@ -13,14 +13,17 @@ class BuscaView(APIView):
         origem = request.data.get('origem')
         destino = request.data.get('destino')
         algoritmo = request.data.get('algoritmo')
+        tempo_limite = float(request.data.get('tempo'))
 
         escolha_algoritmo = {
             'A': ass,
             'CU': ucs,
-            'BP':ucs
+            'BP':ids
         }
-
-        resultado = escolha_algoritmo[algoritmo](origem, destino)
+        if(algoritmo != 'BP'):
+            resultado = escolha_algoritmo[algoritmo](origem, destino)
+        else:
+            resultado = escolha_algoritmo[algoritmo](origem, destino, tempo_limite)
         dados = {}
         dados['tempo'] = resultado[0]
         dados['caminho'] = resultado[1]
